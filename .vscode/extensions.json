@@ -1,0 +1,6 @@
+{
+  "recommendations": [
+    // https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance
+    "ms-python.vscode-pylance"
+  ]
+}

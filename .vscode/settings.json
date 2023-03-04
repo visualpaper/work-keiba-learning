@@ -1,0 +1,32 @@
+{
+  "workbench.editor.enablePreview": false,
+  "workbench.list.openMode": "doubleClick",
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.minimap.enabled": false,
+  "explorer.compactFolders": false,
+  "files.eol": "\n",
+  // formatter
+  "python.formatting.provider": "black",
+  "python.formatting.blackArgs": [
+    // skip-string-normalization で ' を " に変えることを抑制している。
+    // # ※ PEP8 では規定されていないが好みだと思うので抑制している。
+    "skip-string-normalization"
+  ],
+  "editor.formatOnSave": true,
+  // linter
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": [
+    // black の定義 88 に合わせています。
+    // (参照) https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#line-length
+    "--max-line-length=88",
+    // W503 と E203 は black の定義と合わせています。
+    // (参照) https://rcmdnk.com/blog/2019/11/04/computer-python/
+    //        https://org-technology.com/posts/python-black.html
+    "--ignore=E203,W503"
+  ],
+  // Pylance 拡張機能での型チェックを行うようにする。
+  "python.analysis.typeCheckingMode": "basic"
+}
