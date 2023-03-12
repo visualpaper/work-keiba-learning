@@ -1,5 +1,10 @@
 # work-keiba-learning
 
+### poetry
+
+* poetry config virtualenvs.in-project true
+* poetry install
+
 ### Setup
 
 * Anaconda インストール
