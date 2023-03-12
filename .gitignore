@@ -143,3 +143,6 @@ dmypy.json
 
 ## data
 data/*
+
+## model
+model/*
