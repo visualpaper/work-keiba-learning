@@ -22,10 +22,18 @@ JupyterLab インストール
   生成されたファイル内にある以下設定を変更
   > c.NotebookApp.notebook_dir = 'C:\\umejima\\work\\visualpaper\\keiba\\keiba-ai\\'
 
-pip install tensorflow
-pip install keras-rl2
-pip install gym
+Pandas インストール
+> conda install pandas
+
+Tensorflow インストール
+> pip install tensorflow
+
+Keras インストール
+> pip install keras-rl2
+
+OpenAI Gym インストール
+> pip install gym
 
 勉強に必要なもの
-pip install matplotlib
+> pip install matplotlib
 ```
