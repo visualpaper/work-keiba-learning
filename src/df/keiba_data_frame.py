@@ -170,13 +170,15 @@ class KeibaDataFrame:
         )
 
         self._df.drop(
-            ["odds", "popular", "time", "furlong", "rank", "prize"],
+            ["popular", "time", "furlong", "rank", "prize"],
             axis=1,
-            inplace=True
+            inplace=True,
         )
 
     def groups(self):
-        sorted_df = self._df.sort_values(["date_num", "track_id", "round"], ascending=True)
+        sorted_df = self._df.sort_values(
+            ["date_num", "track_id", "round"], ascending=True
+        )
 
         for _, v in sorted_df.groupby(["date_num", "track_id", "round"], sort=False):
             yield v
