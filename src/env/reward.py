@@ -46,18 +46,11 @@ class Reward:
         0: 1 着予想の馬を買う
         1: 2 着予想の馬を買う
         2: 3 着予想の馬を買う
-        3: 4 着予想の馬を買う
-        4: 5 着予想の馬を買う
-        6: 買わない
+        4: 買わない
         '''
         action0_reward = self._calc_result_action_reward(result_target, df.iloc[0])
         action1_reward = self._calc_result_action_reward(result_target, df.iloc[1])
         action2_reward = self._calc_result_action_reward(result_target, df.iloc[2])
-        action3_reward = self._calc_result_action_reward(result_target, df.iloc[3])
-        try:
-            action4_reward = self._calc_result_action_reward(result_target, df.iloc[4])
-        except Exception:
-            action4_reward = -1000
 
         if action == Action.RANK_ONE_HORSE.value:
             reward = action0_reward
@@ -68,22 +61,14 @@ class Reward:
         elif action == Action.RANK_THREE_HORSE.value:
             reward = action2_reward
 
-        elif action == Action.RANK_FOUR_HORSE.value:
-            reward = action3_reward
-
-        elif action == Action.RANK_FIVE_HORSE.value:
-            reward = action4_reward
-
         else:
             if (
                 action0_reward >= 0
                 or action1_reward >= 0
                 or action2_reward >= 0
-                or action3_reward >= 0
-                or action4_reward >= 0
             ):
-                reward = -2500
+                reward = -5000
             else:
-                reward = 2500
+                reward = 10000
 
         return reward

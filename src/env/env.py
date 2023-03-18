@@ -14,22 +14,21 @@ class ActionCounter:
     _1_count: int = 0
     _2_count: int = 0
     _3_count: int = 0
-    _4_count: int = 0
-    _5_count: int = 0
+    _total_reward: int = 0
 
-    def add(self, action: int):
+    def add(self, action: int, reward: int):
+        
         if action == Action.RANK_ONE_HORSE.value:
             self._0_count += 1
+            self._total_reward += reward
         elif action == Action.RANK_TWO_HORSE.value:
             self._1_count += 1
+            self._total_reward += reward
         elif action == Action.RANK_THREE_HORSE.value:
             self._2_count += 1
-        elif action == Action.RANK_FOUR_HORSE.value:
-            self._3_count += 1
-        elif action == Action.RANK_FIVE_HORSE.value:
-            self._4_count += 1
+            self._total_reward += reward
         else:
-            self._5_count += 1
+            self._3_count += 1
 
     def to_string(self) -> str:
         return (
@@ -37,9 +36,8 @@ class ActionCounter:
             f"RANK_ONE_HORSE: {self._0_count}\n"
             f"RANK_TWO_HORSE: {self._1_count}\n"
             f"RANK_THREE_HORSE: {self._2_count}\n"
-            f"RANK_FOUR_HORSE: {self._3_count}\n"
-            f"RANK_FIVE_HORSE: {self._4_count}\n"
-            f"NO_ACITON: {self._5_count}\n"
+            f"NO_ACITON: {self._3_count}\n"
+            f"TOTAL_REWARD: {self._total_reward}\n"
         )
 
 
@@ -50,11 +48,12 @@ class KeibaEnv(gym.Env):
 
         # Action 数
         self.action_space = gym.spaces.Discrete(len(Action))
+        self.reward_range = (-1, 1)
 
         # 状態空間
         # 値の定義は明確化せず、Flatten 都合 20 行 51 列の Shape のみ明確化している。
         self.observation_space = gym.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(20, 51)
+            low=-np.inf, high=np.inf, shape=(3, 2)
         )
 
         # Train Data 読み込み準備
@@ -83,14 +82,26 @@ class KeibaEnv(gym.Env):
         # 1 レースを取得し、observe 化 (20 行固定) する。
         self._race = self._groups[self._steps]
         self._race.reset_index(inplace=True, drop=True)
-        padding_df = self._race.reindex(range(20), fill_value=-1)
-        return padding_df.values.tolist()
+        #padding_df = self._race.reindex(range(20), fill_value=-1)
+        return self._race[["odds", "pred"]].values.tolist()
+
+    def _clipping(self, action, reward):
+        if action == Action.NO_ACITON and reward == 10000:
+            return 0
+
+        if reward > 0:
+            return 1
+
+        return -1
 
     def step(self, action):
-        self._action_counter.add(action)
 
         # Reward 計算
         reward = self._reward.calc(self._race, action)
+
+        self._action_counter.add(action, reward)
+
+        clipping_reward = self._clipping(action, reward)
 
         # 次の Step に進む
         # ※ steps を +1 した後に状態を取得する必要がある (ただの実装都合...)
@@ -98,7 +109,7 @@ class KeibaEnv(gym.Env):
         obs = self._observe()
         self._done = self._steps == len(self._groups) - 1
 
-        return obs, reward, self._done, {}
+        return obs, clipping_reward, self._done, {}
 
     def render(self, mode='human'):
         pass
