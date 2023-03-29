@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 
 from dataclasses import dataclass
@@ -11,6 +12,11 @@ class ResultFrame:
     @classmethod
     def from_data(cls, path: str):
         return cls(pd.read_csv(path, encoding="utf-8"))
+
+    @classmethod
+    def from_datas(cls, paths: List[str]):
+        datas = [pd.read_csv(path, encoding="utf-8") for path in paths]
+        return cls(pd.concat(datas))
 
     @property
     def df(self) -> DataFrame:
@@ -29,8 +35,8 @@ class ResultFrame:
 
     def setting_types(self):
         # int 型を明示化
-        self._df[["track_id", "date_num", "round", "number"]] = self._df[
-            ["track_id", "date_num", "round", "number"]
+        self._df[["track_id", "date_num", "round", "number", "number2"]] = self._df[
+            ["track_id", "date_num", "round", "number", "number2"]
         ].astype(int)
 
         # float 型を明示化

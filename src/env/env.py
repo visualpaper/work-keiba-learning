@@ -14,29 +14,64 @@ class ActionCounter:
     _1_count: int = 0
     _2_count: int = 0
     _3_count: int = 0
+    _4_count: int = 0
+    _5_count: int = 0
+    _6_count: int = 0
+    _7_count: int = 0
+    _8_count: int = 0
+    _9_count: int = 0
+    _10_count: int = 0
     _total_reward: int = 0
 
     def add(self, action: int, reward: int):
         
-        if action == Action.RANK_ONE_HORSE.value:
+        if action == Action.RANK_ONE_TWO_HORSE.value:
             self._0_count += 1
             self._total_reward += reward
-        elif action == Action.RANK_TWO_HORSE.value:
+        elif action == Action.RANK_ONE_THREE_HORSE.value:
             self._1_count += 1
             self._total_reward += reward
-        elif action == Action.RANK_THREE_HORSE.value:
+        elif action == Action.RANK_ONE_FOUR_HORSE.value:
             self._2_count += 1
             self._total_reward += reward
-        else:
+        elif action == Action.RANK_ONE_FIVE_HORSE.value:
             self._3_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_TWO_THREE_HORSE.value:
+            self._4_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_TWO_FOUR_HORSE.value:
+            self._5_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_TWO_FIVE_HORSE.value:
+            self._6_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_THREE_FOUR_HORSE.value:
+            self._7_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_THREE_FIVE_HORSE.value:
+            self._8_count += 1
+            self._total_reward += reward
+        elif action == Action.RANK_FOUR_FIVE_HORSE.value:
+            self._9_count += 1
+            self._total_reward += reward
+        else:
+            self._10_count += 1
 
     def to_string(self) -> str:
         return (
             f"\n"
-            f"RANK_ONE_HORSE: {self._0_count}\n"
-            f"RANK_TWO_HORSE: {self._1_count}\n"
-            f"RANK_THREE_HORSE: {self._2_count}\n"
-            f"NO_ACITON: {self._3_count}\n"
+            f"RANK_ONE_TWO_HORSE: {self._0_count}\n"
+            f"RANK_ONE_THREE_HORSE: {self._1_count}\n"
+            f"RANK_ONE_FOUR_HORSE: {self._2_count}\n"
+            f"RANK_ONE_FIVE_HORSE: {self._3_count}\n"
+            f"RANK_TWO_THREE_HORSE: {self._4_count}\n"
+            f"RANK_TWO_FOUR_HORSE: {self._5_count}\n"
+            f"RANK_TWO_FIVE_HORSE: {self._6_count}\n"
+            f"RANK_THREE_FOUR_HORSE: {self._7_count}\n"
+            f"RANK_THREE_FIVE_HORSE: {self._8_count}\n"
+            f"RANK_FOUR_FIVE_HORSE: {self._9_count}\n"
+            f"NO_ACITON: {self._10_count}\n"
             f"TOTAL_REWARD: {self._total_reward}\n"
         )
 
@@ -53,7 +88,7 @@ class KeibaEnv(gym.Env):
         # 状態空間
         # 値の定義は明確化せず、Flatten 都合 20 行 51 列の Shape のみ明確化している。
         self.observation_space = gym.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(3, 2)
+            low=-np.inf, high=np.inf, shape=(5, 2)
         )
 
         # Train Data 読み込み準備
@@ -69,7 +104,7 @@ class KeibaEnv(gym.Env):
 
         # Train Data 整備
         # ※ 既に AI 側で filter/data 整備は実施済みのため再 type 明確化と、特定列を Drop のみ行っている。
-        self._kdf = KeibaDataFrame.from_data(self._train_path)
+        self._kdf = KeibaDataFrame.from_datas(self._train_path)
         self._kdf.setting_types()
 
         # Train Data 分割
@@ -82,8 +117,10 @@ class KeibaEnv(gym.Env):
         # 1 レースを取得し、observe 化 (20 行固定) する。
         self._race = self._groups[self._steps]
         self._race.reset_index(inplace=True, drop=True)
-        #padding_df = self._race.reindex(range(20), fill_value=-1)
-        return self._race[["odds", "pred"]].values.tolist()
+        #padding_df = self._race.reindex(range(5), fill_value=-1)
+        padding_df = self._race[["odds", "pred"]].reindex(range(5), fill_value=-1)
+        #print(padding_df.values.tolist())
+        return padding_df.values.tolist()
 
     def _clipping(self, action, reward):
         if action == Action.NO_ACITON and reward == 10000:
