@@ -1,3 +1,4 @@
+from typing import List
 import pandas as pd
 
 from dataclasses import dataclass
@@ -12,10 +13,10 @@ class Reward:
     _rdf: DataFrame
 
     @classmethod
-    def initialize(cls, result_path: str):
+    def initialize(cls, result_path: List[str]):
 
         # Result Data 読み込み
-        rdf = ResultFrame.from_data(result_path)
+        rdf = ResultFrame.from_datas(result_path)
         rdf.setting_datas()
         rdf.setting_types()
         return cls(rdf.df)
@@ -28,14 +29,24 @@ class Reward:
         ]
 
     def _calc_result_action_reward(
-        self, result_target: DataFrame, select_horse: pd.Series
+        self, result_target: DataFrame, select_horse1: pd.Series, select_horse2: pd.Series
     ) -> int:
-        result = result_target[(result_target["number"] == int(select_horse["number"]))]
+        result1 = result_target[
+            (result_target["number"] == int(select_horse1["number"]))
+            & (result_target["number2"] == int(select_horse2["number"]))
+        ]
+        result2 = result_target[
+            (result_target["number"] == int(select_horse2["number"]))
+            & (result_target["number2"] == int(select_horse1["number"]))
+        ]
 
-        if len(result) == 0:
-            return -1000
+        if len(result1) != 0:
+            return int((float(result1["odds"].values[0]) * 1000) - 1000)
 
-        return int((float(result["odds"].values[0]) * 1000) - 1000)
+        if len(result2) != 0:
+            return int((float(result2["odds"].values[0]) * 1000) - 1000)
+
+        return -1000
 
     def calc(self, race: DataFrame, action: int) -> int:
         df = race.sort_values(["pred"], ascending=[False])
@@ -43,29 +54,75 @@ class Reward:
 
         '''
         action
-        0: 1 着予想の馬を買う
-        1: 2 着予想の馬を買う
-        2: 3 着予想の馬を買う
-        4: 買わない
         '''
-        action0_reward = self._calc_result_action_reward(result_target, df.iloc[0])
-        action1_reward = self._calc_result_action_reward(result_target, df.iloc[1])
-        action2_reward = self._calc_result_action_reward(result_target, df.iloc[2])
+        action0_reward = self._calc_result_action_reward(result_target, df.iloc[0], df.iloc[1])
+        action1_reward = self._calc_result_action_reward(result_target, df.iloc[0], df.iloc[2])
+        action2_reward = self._calc_result_action_reward(result_target, df.iloc[0], df.iloc[3])
+        try:
+            action3_reward = self._calc_result_action_reward(result_target, df.iloc[0], df.iloc[4])
+        except Exception:
+            action3_reward = -1000
 
-        if action == Action.RANK_ONE_HORSE.value:
+        action4_reward = self._calc_result_action_reward(result_target, df.iloc[1], df.iloc[2])
+        action5_reward = self._calc_result_action_reward(result_target, df.iloc[1], df.iloc[3])
+        try:
+            action6_reward = self._calc_result_action_reward(result_target, df.iloc[1], df.iloc[4])
+        except Exception:
+            action6_reward = -1000
+
+        action7_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[3])
+        try:
+            action8_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[4])
+        except Exception:
+            action8_reward = -1000
+
+        try:
+            action9_reward = self._calc_result_action_reward(result_target, df.iloc[3], df.iloc[4])
+        except Exception:
+            action9_reward = -1000
+
+        if action == Action.RANK_ONE_TWO_HORSE.value:
             reward = action0_reward
 
-        elif action == Action.RANK_TWO_HORSE.value:
+        elif action == Action.RANK_ONE_THREE_HORSE.value:
             reward = action1_reward
 
-        elif action == Action.RANK_THREE_HORSE.value:
+        elif action == Action.RANK_ONE_FOUR_HORSE.value:
             reward = action2_reward
+
+        elif action == Action.RANK_ONE_FIVE_HORSE.value:
+            reward = action3_reward
+
+        elif action == Action.RANK_TWO_THREE_HORSE.value:
+            reward = action4_reward
+
+        elif action == Action.RANK_TWO_FOUR_HORSE.value:
+            reward = action5_reward
+
+        elif action == Action.RANK_TWO_FIVE_HORSE.value:
+            reward = action6_reward
+
+        elif action == Action.RANK_THREE_FOUR_HORSE.value:
+            reward = action7_reward
+
+        elif action == Action.RANK_THREE_FIVE_HORSE.value:
+            reward = action8_reward
+
+        elif action == Action.RANK_FOUR_FIVE_HORSE.value:
+            reward = action9_reward
 
         else:
             if (
                 action0_reward >= 0
                 or action1_reward >= 0
                 or action2_reward >= 0
+                or action3_reward >= 0
+                or action4_reward >= 0
+                or action5_reward >= 0
+                or action6_reward >= 0
+                or action7_reward >= 0
+                or action8_reward >= 0
+                or action9_reward >= 0
             ):
                 reward = -5000
             else:

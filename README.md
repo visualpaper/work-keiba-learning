@@ -32,6 +32,7 @@ Pandas インストール
 
 Tensorflow インストール
 > pip install tensorflow
+> pip install tensorflow_docs
 
 Keras インストール
 > pip install keras-rl2
