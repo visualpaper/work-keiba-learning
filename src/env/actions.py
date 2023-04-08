@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import List
 
 
 class Action(Enum):
@@ -13,3 +14,15 @@ class Action(Enum):
     RANK_THREE_FIVE_HORSE = 8
     RANK_FOUR_FIVE_HORSE = 9
     NO_ACITON = 10
+
+    @classmethod
+    def of(cls, value: int):
+        for t in Action:
+            if t.value == value:
+                return t
+
+        raise Exception(value)
+
+    @staticmethod
+    def values() -> List:
+        return [t for t in Action]
