@@ -65,36 +65,36 @@ class Reward:
             result_target, df.iloc[0], df.iloc[2]
         )
         action2_reward = self._calc_result_action_reward(
-            result_target, df.iloc[0], df.iloc[3]
-        )
-        try:
-            action3_reward = self._calc_result_action_reward(
-                result_target, df.iloc[0], df.iloc[4]
-            )
-        except Exception:
-            action3_reward = 0
-
-        action4_reward = self._calc_result_action_reward(
             result_target, df.iloc[1], df.iloc[2]
         )
-        action5_reward = self._calc_result_action_reward(
-            result_target, df.iloc[1], df.iloc[3]
-        )
-        try:
-            action6_reward = self._calc_result_action_reward(result_target, df.iloc[1], df.iloc[4])
-        except Exception:
-            action6_reward = 0
+        # try:
+        #     action3_reward = self._calc_result_action_reward(
+        #         result_target, df.iloc[0], df.iloc[4]
+        #     )
+        # except Exception:
+        #     action3_reward = 0
 
-        action7_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[3])
-        try:
-            action8_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[4])
-        except Exception:
-            action8_reward = 0
+        # action4_reward = self._calc_result_action_reward(
+        #     result_target, df.iloc[1], df.iloc[2]
+        # )
+        # action5_reward = self._calc_result_action_reward(
+        #     result_target, df.iloc[1], df.iloc[3]
+        # )
+        # try:
+        #     action6_reward = self._calc_result_action_reward(result_target, df.iloc[1], df.iloc[4])
+        # except Exception:
+        #     action6_reward = 0
 
-        try:
-            action9_reward = self._calc_result_action_reward(result_target, df.iloc[3], df.iloc[4])
-        except Exception:
-            action9_reward = 0
+        # action7_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[3])
+        # try:
+        #     action8_reward = self._calc_result_action_reward(result_target, df.iloc[2], df.iloc[4])
+        # except Exception:
+        #     action8_reward = 0
+
+        # try:
+        #     action9_reward = self._calc_result_action_reward(result_target, df.iloc[3], df.iloc[4])
+        # except Exception:
+        #     action9_reward = 0
 
         if action == Action.RANK_ONE_TWO_HORSE:
             reward = action0_reward
@@ -102,42 +102,30 @@ class Reward:
         elif action == Action.RANK_ONE_THREE_HORSE:
             reward = action1_reward
 
-        elif action == Action.RANK_ONE_FOUR_HORSE:
+        elif action == Action.RANK_TWO_THREE_HORSE:
             reward = action2_reward
 
-        elif action == Action.RANK_ONE_FIVE_HORSE:
-            reward = action3_reward
+        # elif action == Action.RANK_TWO_FIVE_HORSE:
+        #     reward = action6_reward
 
-        elif action == Action.RANK_TWO_THREE_HORSE:
-            reward = action4_reward
+        # elif action == Action.RANK_THREE_FOUR_HORSE:
+        #     reward = action7_reward
 
-        elif action == Action.RANK_TWO_FOUR_HORSE:
-            reward = action5_reward
+        # elif action == Action.RANK_THREE_FIVE_HORSE:
+        #     reward = action8_reward
 
-        elif action == Action.RANK_TWO_FIVE_HORSE:
-            reward = action6_reward
-
-        elif action == Action.RANK_THREE_FOUR_HORSE:
-            reward = action7_reward
-
-        elif action == Action.RANK_THREE_FIVE_HORSE:
-            reward = action8_reward
-
-        elif action == Action.RANK_FOUR_FIVE_HORSE:
-            reward = action9_reward
+        # elif action == Action.RANK_FOUR_FIVE_HORSE:
+        #     reward = action9_reward
 
         else:
             if (
-                action0_reward >= 0
-                or action1_reward >= 0
-                or action2_reward >= 0
-                or action3_reward >= 0
-                or action4_reward >= 0
-                or action5_reward >= 0
-                or action6_reward >= 0
-                or action7_reward >= 0
-                or action8_reward >= 0
-                or action9_reward >= 0
+                action0_reward > 0
+                or action1_reward > 0
+                or action2_reward > 0
+                # or action6_reward > 0
+                # or action7_reward > 0
+                # or action8_reward > 0
+                # or action9_reward > 0
             ):
                 reward = -5000
             else:

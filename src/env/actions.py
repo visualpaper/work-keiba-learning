@@ -5,15 +5,16 @@ from typing import List
 class Action(Enum):
     RANK_ONE_TWO_HORSE = 0
     RANK_ONE_THREE_HORSE = 1
-    RANK_ONE_FOUR_HORSE = 2
-    RANK_ONE_FIVE_HORSE = 3
-    RANK_TWO_THREE_HORSE = 4
-    RANK_TWO_FOUR_HORSE = 5
-    RANK_TWO_FIVE_HORSE = 6
-    RANK_THREE_FOUR_HORSE = 7
-    RANK_THREE_FIVE_HORSE = 8
-    RANK_FOUR_FIVE_HORSE = 9
-    NO_ACITON = 10
+    RANK_TWO_THREE_HORSE = 2
+    # RANK_ONE_FOUR_HORSE = 2
+    # RANK_ONE_FIVE_HORSE = 3
+    # RANK_TWO_THREE_HORSE = 4
+    # RANK_TWO_FOUR_HORSE = 5
+    # RANK_TWO_FIVE_HORSE = 6
+    # RANK_THREE_FOUR_HORSE = 7
+    # RANK_THREE_FIVE_HORSE = 8
+    # RANK_FOUR_FIVE_HORSE = 9
+    NO_ACITON = 3
 
     @classmethod
     def of(cls, value: int):
